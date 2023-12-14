@@ -62,8 +62,13 @@ class Game
 					break 2;
 				}
 				$this->Level_board->play($order);
+
+				if (($back = $this->Level_board->Player->isLost()) !== false) {
+					$this->level -= 1 + $back;
+					break;
+				}
 			}
-			$this->level++;
+			$this->level <= 0 ? $this->level = 1 : $this->level ++;
 		}
 
 		echo "\e[?25h\n\e[A";

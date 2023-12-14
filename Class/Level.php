@@ -9,6 +9,8 @@ class Level
 	public const MAP_END = MAP_END;
 	public const BLOCK = DISP_BLOCK;
 	public const MAP_BLOCK = MAP_BLOCK;
+	public const SPIKE = DISP_SPIKE;
+	public const HOLE = DISP_HOLE;
 	public const AIR = DISP_AIR;
 	public const BORDER = DISP_BORDER;
 
@@ -40,7 +42,7 @@ class Level
 
 		foreach ($level_content as $line) {
 
-			$line = preg_replace("/[^"
+			$line = preg_replace("/[^\d"
 				. $this::MAP_START
 				. $this::MAP_END
 				. $this::MAP_BLOCK
@@ -70,9 +72,10 @@ class Level
 		system("clear");
 		echo (str_repeat($this::BORDER, $this->Board_Width + 2) . "\n");
 		foreach ($this->Game_board as $line) {
+			$line = preg_replace("/[1-9]/", $this::HOLE, $line);
 			$line = str_replace(
-				[$this::MAP_END, $this::MAP_BLOCK],
-				[$this::END, $this::BLOCK],
+				[$this::MAP_END, $this::MAP_BLOCK, 0],
+				[$this::END, $this::BLOCK, $this::SPIKE],
 				$line);
 			echo (""
 				. $this::BORDER

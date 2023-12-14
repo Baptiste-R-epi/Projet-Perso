@@ -103,4 +103,11 @@ class Player
 	public function isWin() {
 		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x] == $this->Level::MAP_END;
 	}
+
+	public function isLost() {
+		if (is_numeric($back = $this->Level->getBoard()[$this->Pos_y][$this->Pos_x])) {
+			return $back;
+		}
+		return false;
+	}
 }
