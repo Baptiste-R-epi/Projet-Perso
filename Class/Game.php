@@ -25,17 +25,23 @@ class Game
 	public function getOrder() {
 		$key = fgets(STDIN);
 		$result = [];
-		if(preg_match("/\e(\[[ABCD])?/", $key, $result) != 1) {
+		if (preg_match("/\e(\[[ABCD])?|[ aqzwd]/", $key, $result) != 1) {
 			return "NONE";
 		}
-		
+
 		switch ($result[0]) {
 			case "\e":
 				return "ESC";
+			case " ":
+			case "z":
+			case "w":
 			case "\e[A":
 				return "UP";
+			case "d":
 			case "\e[C":
 				return "RIGHT";
+			case "q":
+			case "a":
 			case "\e[D":
 				return "LEFT";
 		}
@@ -57,7 +63,7 @@ class Game
 				}
 				$this->Level_board->play($order);
 			}
-			$this->level ++;
+			$this->level++;
 		}
 
 		echo "\e[?25h\n\e[A";

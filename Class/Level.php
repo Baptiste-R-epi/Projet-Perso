@@ -13,8 +13,6 @@ class Level
 	public const BORDER = DISP_BORDER;
 
 	private $Game_board = [];
-	private $CLI_pos_x = 0;
-	private $CLI_pos_y = 0;
 	private $Board_Width = 1;
 	private $Board_Height = 1;
 	public $Player;
