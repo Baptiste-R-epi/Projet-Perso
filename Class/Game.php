@@ -8,7 +8,6 @@ class Game
 	public function __construct() {
 		$this->level = 1;
 		$this->Level_board = new Level();
-		$this->startGame();
 	}
 
 	public function loadLevel($level) {
@@ -25,7 +24,7 @@ class Game
 	public function getOrder() {
 		$key = fgets(STDIN);
 		$result = [];
-		if (preg_match("/\e(\[[ABCD])?|[ aqzwd]/", $key, $result) != 1) {
+		if (preg_match("/\e(\[[ABCD])?|[ aqzwd]|\n/", $key, $result) != 1) {
 			return "NONE";
 		}
 
@@ -68,9 +67,9 @@ class Game
 					break;
 				}
 			}
-			$this->level <= 0 ? $this->level = 1 : $this->level ++;
+			$this->level <= 0 ? $this->level = 1 : $this->level++;
 		}
-
+		system("stty cbreak echo");
 		echo "\e[?25h\n\e[A";
 	}
 }

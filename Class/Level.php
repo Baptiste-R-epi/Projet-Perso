@@ -69,14 +69,24 @@ class Level
 	}
 
 	public function displayStartingBoard() {
-		system("clear");
+		// Clear screen
+		echo "\e[H\e[J";
+		// Draw upper border
 		echo (str_repeat($this::BORDER, $this->Board_Width + 2) . "\n");
-		foreach ($this->Game_board as $line) {
-			$line = preg_replace("/[1-9]/", $this::HOLE, $line);
+
+		$board_size = sizeof($this->Game_board);
+		for ($i = 0; $i < $board_size; $i++) {
+			$line = $this->Game_board[$i];
+			if ($i != $board_size - 1) {
+				$line = preg_replace("/[1-9]/", $this::HOLE, $line);
+			} else {
+				$line = preg_replace("/[1-9]/", $this::AIR, $line);
+			}
 			$line = str_replace(
 				[$this::MAP_END, $this::MAP_BLOCK, 0],
 				[$this::END, $this::BLOCK, $this::SPIKE],
 				$line);
+
 			echo (""
 				. $this::BORDER
 				. $line
@@ -84,7 +94,14 @@ class Level
 				. "\n"
 			);
 		}
-		echo (str_repeat($this::BORDER, $this->Board_Width + 2));
+
+		$under_border = $this->Game_board[$board_size - 1];
+		for ($i = 0; $i <= strlen($under_border) - 1; $i ++) {
+			$under_border[$i] = (preg_match("/[1-9]/", $under_border[$i]) ? $this::AIR : $this::BORDER);
+		}
+
+		echo $this::BORDER , $under_border , $this::BORDER;
+
 		$this->Player->print_cursor();
 	}
 

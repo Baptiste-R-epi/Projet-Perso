@@ -2,4 +2,5 @@
 
 include_once("Class/Game.php");
 
-new Game();
+$game = new Game();
+$game->startGame();

@@ -2,6 +2,7 @@
 
 // The DISP config defines what the game will looks like
 // String must be 1 character long
+// Holes put on the ground will not display, but will also not display the cases below.
 
 const
 	DISP_CURSOR = "ǿ",
