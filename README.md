@@ -2,7 +2,7 @@ Welcome to this little game project.
 
 It is a CLI based game. You move yourself around with the arrow keys, zqsd/awsd, space. You cannot "move down", and moving up makes you jump. Space is a jump too. Escape exit the game.
 
-The "config.php" file allows you to edit the way the map must be build, and how the game display. Check the file, comments are explicite enough.
+The "config.php" file allows you to edit the way the map must be build, and how the game display. Check the file, comments are explicite enough. It also provides more information about some features.
 
 Levels can be freely created, named Level_01, Level_02 ... up to Level_99 if you wish.
     There is an example of how a level is build. An empty line is regognized as a fully empty line by the game.
