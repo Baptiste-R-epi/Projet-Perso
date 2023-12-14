@@ -31,7 +31,7 @@ class Player
 			return;
 		}
 
-		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x - 1] == $this->Level::BLOCK) {
+		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x - 1] == $this->Level::MAP_BLOCK) {
 			return;
 		}
 
@@ -47,7 +47,7 @@ class Player
 			return;
 		}
 
-		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x + 1] == $this->Level::BLOCK) {
+		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x + 1] == $this->Level::MAP_BLOCK) {
 			return;
 		}
 
@@ -61,7 +61,7 @@ class Player
 		if (
 			$this->Pos_y == $this->Level->getHeight() - 1 ?
 			true :
-			($this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] == $this->Level::BLOCK ?
+			($this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] == $this->Level::MAP_BLOCK ?
 				true : false) // Equal OR, but without warning
 		) {
 			$this->jump = 3;
@@ -77,7 +77,7 @@ class Player
 		if ($this->jump > 0) {
 			if (
 				$this->Pos_y > 0 ?
-				$this->Level->getBoard()[$this->Pos_y - 1][$this->Pos_x] != $this->Level::BLOCK ?
+				$this->Level->getBoard()[$this->Pos_y - 1][$this->Pos_x] != $this->Level::MAP_BLOCK ?
 				true : false : false // Equal AND, but without warning
 			) {
 				$this->jump--;
@@ -92,7 +92,7 @@ class Player
 		}
 		if (
 			$this->Pos_y != $this->Level->getHeight() - 1 &&
-			$this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] != $this->Level::BLOCK
+			$this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] != $this->Level::MAP_BLOCK
 		) {
 			$this->clean_position();
 			$this->Pos_y++;
@@ -101,6 +101,6 @@ class Player
 	}
 
 	public function isWin() {
-		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x] == $this->Level::END;
+		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x] == $this->Level::MAP_END;
 	}
 }

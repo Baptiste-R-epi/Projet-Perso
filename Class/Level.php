@@ -72,6 +72,10 @@ class Level
 		system("clear");
 		echo (str_repeat($this::BORDER, $this->Board_Width + 2) . "\n");
 		foreach ($this->Game_board as $line) {
+			$line = str_replace(
+				[$this::MAP_END, $this::MAP_BLOCK],
+				[$this::END, $this::BLOCK],
+				$line);
 			echo (""
 				. $this::BORDER
 				. $line
