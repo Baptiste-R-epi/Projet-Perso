@@ -42,6 +42,12 @@ class Level
 
 		foreach ($level_content as $line) {
 
+			$line = substr($line, 0, $this->Board_Width);
+			$line = str_pad($line
+				, $this->Board_Width
+				, $this::AIR
+			);
+
 			$line = preg_replace("/[^\d"
 				. $this::MAP_START
 				. $this::MAP_END
@@ -51,11 +57,6 @@ class Level
 				, $line
 			);
 
-			$line = substr($line, 0, $this->Board_Width);
-			$line = str_pad($line
-				, $this->Board_Width
-				, $this::AIR
-			);
 
 			if (($pos = strpos($line, $this::MAP_START)) !== false) {
 				$this->Player->setPosition($pos, sizeof($board));
@@ -74,10 +75,9 @@ class Level
 		// Draw upper border
 		echo (str_repeat($this::BORDER, $this->Board_Width + 2) . "\n");
 
-		$board_size = sizeof($this->Game_board);
-		for ($i = 0; $i < $board_size; $i++) {
+		for ($i = 0; $i < $this->Board_Height; $i++) {
 			$line = $this->Game_board[$i];
-			if ($i != $board_size - 1) {
+			if ($i != $this->Board_Height - 1) {
 				$line = preg_replace("/[1-9]/", $this::HOLE, $line);
 			} else {
 				$line = preg_replace("/[1-9]/", $this::AIR, $line);
@@ -95,7 +95,7 @@ class Level
 			);
 		}
 
-		$under_border = $this->Game_board[$board_size - 1];
+		$under_border = $this->Game_board[$this->Board_Height - 1];
 		for ($i = 0; $i <= strlen($under_border) - 1; $i ++) {
 			$under_border[$i] = (preg_match("/[1-9]/", $under_border[$i]) ? $this::AIR : $this::BORDER);
 		}
