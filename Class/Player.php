@@ -26,9 +26,17 @@ class Player
 		echo "\e[" . 2 + $this->Pos_y . ";" . 2 + $this->Pos_x . "H" . $this::CURSOR;
 	}
 	public function isCellFree($x, $y) {
+		// must manage differences on arrays and strings
+		// array[-1] gives null ; string[-1] gives last character
+		// array[inf] gives null ; string[inf] gives ""
+		// Pos_x is string, Pos_y is array
+		if ($this->Pos_x + $x < 0) {
+			return false;
+		}
 		// @ ignore warning, allowing to quickly check if it is outside borders
+		
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
-		return $cell == null ?
+		return ($cell === null || $cell === "") ?
 			false :
 			$cell != $this->Level::BLOCK;
 	}
