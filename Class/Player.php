@@ -25,48 +25,57 @@ class Player
 	public function print_cursor() {
 		echo "\e[" . 2 + $this->Pos_y . ";" . 2 + $this->Pos_x . "H" . $this::CURSOR;
 	}
+	public function isCellFree($x, $y) {
+		// @ ignore warning, allowing to quickly check if it is outside borders
+		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
+		return $cell == null ?
+			false :
+			$cell != $this->Level::BLOCK;
+	}
+	public function isOnGround() {
+		return !$this->isCellFree(0, 1);
+	}
+	public function moveCursor($x, $y) {
+		$this->clean_position();
+		$this->Pos_x += $x;
+		$this->Pos_y += $y;
+		$this->print_cursor();
+	}
 
 	public function moveLeft() {
-		if ($this->Pos_x <= 0) {
-			return;
+		if ($this->isCellFree(-1, 0)) {
+			$this->moveCursor(-1, 0);
+		} elseif (
+			$this->isCellFree(0, -1) &&
+			$this->isCellFree(-1, -1) && (
+				$this->isOnGround() ||
+				$this->jump > 0
+			)
+		) {
+			$this->moveCursor(-1, -1);
+			$this->jump = 0;
 		}
-
-		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x - 1] == $this->Level::MAP_BLOCK) {
-			return;
-		}
-
-		$this->clean_position();
-		$this->Pos_x--;
-		$this->print_cursor();
-
-
 	}
 
 	public function moveRight() {
-		if ($this->Pos_x >= $this->Level->getWidth() - 1) {
-			return;
+		if ($this->isCellFree(1, 0)) {
+			$this->moveCursor(1, 0);
+		} elseif (
+			$this->isCellFree(0, -1) &&
+			$this->isCellFree(1, -1) && (
+				$this->isOnGround() ||
+				$this->jump > 0
+			)
+		) {
+			$this->moveCursor(1, -1);
+			$this->jump = 0;
 		}
-
-		if ($this->Level->getBoard()[$this->Pos_y][$this->Pos_x + 1] == $this->Level::MAP_BLOCK) {
-			return;
-		}
-
-		$this->clean_position();
-		$this->Pos_x++;
-		$this->print_cursor();
-
 	}
 
 	public function moveUp() {
-		if (
-			$this->Pos_y == $this->Level->getHeight() - 1 ?
-			true :
-			($this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] == $this->Level::MAP_BLOCK ?
-				true : false) // Equal OR, but without warning
-		) {
+		if ($this->isOnGround()) {
 			$this->jump = 3;
 		}
-
 	}
 
 	public function gravity() {
@@ -75,28 +84,16 @@ class Player
 		}
 
 		if ($this->jump > 0) {
-			if (
-				$this->Pos_y > 0 ?
-				$this->Level->getBoard()[$this->Pos_y - 1][$this->Pos_x] != $this->Level::MAP_BLOCK ?
-				true : false : false // Equal AND, but without warning
-			) {
+			if ($this->isCellFree(0, -1)) {
 				$this->jump--;
-
-				$this->clean_position();
-				$this->Pos_y--;
-				$this->print_cursor();
+				$this->moveCursor(0, -1);
 				return;
 			} else {
 				$this->jump = 0;
 			}
 		}
-		if (
-			$this->Pos_y != $this->Level->getHeight() - 1 &&
-			$this->Level->getBoard()[$this->Pos_y + 1][$this->Pos_x] != $this->Level::MAP_BLOCK
-		) {
-			$this->clean_position();
-			$this->Pos_y++;
-			$this->print_cursor();
+		if ($this->isCellFree(0, 1)) {
+			$this->moveCursor(0, 1);
 		}
 	}
 

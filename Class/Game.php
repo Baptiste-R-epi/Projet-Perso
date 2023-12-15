@@ -24,9 +24,7 @@ class Game
 	public function getOrder() {
 		$key = fgets(STDIN);
 		$result = [];
-		if (preg_match("/\e(\[[ABCD])?|[ aqzwd]|\n/", $key, $result) != 1) {
-			return "NONE";
-		}
+		preg_match("/\e(\[[ABCD])?|[ aqzwd]|/", $key, $result);
 
 		switch ($result[0]) {
 			case "\e":
