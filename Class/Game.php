@@ -55,15 +55,16 @@ class Game
 				usleep(200000);
 				$order = $this->getOrder();
 
+				if (($back = $this->Level_board->Player->isLost()) !== false) {
+					$this->level -= 1 + $back;
+					break;
+				}
+				
 				if ($order == "ESC") {
 					break 2;
 				}
 				$this->Level_board->play($order);
 
-				if (($back = $this->Level_board->Player->isLost()) !== false) {
-					$this->level -= 1 + $back;
-					break;
-				}
 			}
 			$this->level <= 0 ? $this->level = 1 : $this->level++;
 		}
