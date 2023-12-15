@@ -88,9 +88,8 @@ class Player
 				$this->jump--;
 				$this->moveCursor(0, -1);
 				return;
-			} else {
-				$this->jump = 0;
 			}
+			$this->jump = 0;
 		}
 		if ($this->isCellFree(0, 1)) {
 			$this->moveCursor(0, 1);
