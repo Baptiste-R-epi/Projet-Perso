@@ -7,7 +7,7 @@ The "config.php" file allows you to edit the way the map must be build, and how 
 Levels can be freely created, named Level_01.txt, Level_02.txt ... up to Level_99.txt if you wish.
     There is an example of how a level is build. An empty line is regognized as a fully empty line by the game.
     The screen's width is dictated by the first line's width.
-    Anything that is not regognized as either start, end or block, will be empty.
+    Anything that is not regognized as either start, end, block, or spike/hole, will be empty.
     There is no need to fill entire lines. If you have nothing more but empty cases to fill in a line, just leave it empty.
 
 Breaking the game with CTRL-C will hide your cursor.

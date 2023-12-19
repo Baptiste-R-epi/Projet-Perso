@@ -14,7 +14,7 @@ const
 	DISP_HOLE = "_";
 
 
-// The MAP config defines what must be feed in the levels to be recognize as different elements
+// The MAP config defines what must be fed in the levels to be recognize as different elements
 // Since it is used in a regex, please do not use . / * + - or anything which might conflict
 // String must be 1 character long
 // Spike are always a 0. Holes are a number equal to the number of levels you loose.
