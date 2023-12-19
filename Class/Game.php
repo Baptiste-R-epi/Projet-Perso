@@ -51,11 +51,11 @@ class Game
 		echo "\e[?25l";
 
 		while ($this->loadLevel($this->level)) {
-			while (!$this->Level_board->Player->isWin()) {
+			while (!$this->Level_board->isWin()) {
 				usleep(200000);
 				$order = $this->getOrder();
 
-				if (($back = $this->Level_board->Player->isLost()) !== false) {
+				if (($back = $this->Level_board->isLost()) !== false) {
 					$this->level -= 1 + $back;
 					break;
 				}

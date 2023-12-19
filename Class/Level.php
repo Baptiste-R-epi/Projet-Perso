@@ -17,7 +17,7 @@ class Level
 	private $Game_board = [];
 	private $Board_Width = 1;
 	private $Board_Height = 1;
-	public $Player;
+	private $Player;
 
 	public function getBoard() {
 		return $this->Game_board;
@@ -96,13 +96,24 @@ class Level
 		}
 
 		$under_border = $this->Game_board[$this->Board_Height - 1];
-		for ($i = 0; $i <= strlen($under_border) - 1; $i ++) {
+		for ($i = 0; $i <= strlen($under_border) - 1; $i++) {
 			$under_border[$i] = (preg_match("/[1-9]/", $under_border[$i]) ? $this::AIR : $this::BORDER);
 		}
 
-		echo $this::BORDER , $under_border , $this::BORDER;
+		echo $this::BORDER, $under_border, $this::BORDER;
 
 		$this->Player->print_cursor();
+	}
+
+	public function isWin() {
+		return $this->Game_board[$this->Player->Pos_y][$this->Player->Pos_x] == $this->Player->Level::MAP_END;
+	}
+
+	public function isLost() {
+		if (is_numeric($back = $this->Game_board[$this->Player->Pos_y][$this->Player->Pos_x])) {
+			return $back;
+		}
+		return false;
 	}
 
 	public function play($action = "NONE") {

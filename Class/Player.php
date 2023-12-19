@@ -87,7 +87,7 @@ class Player
 	}
 
 	public function gravity() {
-		if ($this->isWin()) {
+		if ($this->Level->isWin()) {
 			return;
 		}
 
@@ -102,16 +102,5 @@ class Player
 		if ($this->isCellFree(0, 1)) {
 			$this->moveCursor(0, 1);
 		}
-	}
-
-	public function isWin() {
-		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x] == $this->Level::MAP_END;
-	}
-
-	public function isLost() {
-		if (is_numeric($back = $this->Level->getBoard()[$this->Pos_y][$this->Pos_x])) {
-			return $back;
-		}
-		return false;
 	}
 }
