@@ -8,6 +8,7 @@ const
 	DISP_CURSOR = "ǿ",
 	DISP_END = "*",
 	DISP_BLOCK = "#",
+	DISP_END_COIN = "C",
 	DISP_AIR = " ",
 	DISP_BORDER = "#",
 	DISP_SPIKE = "^",
@@ -22,4 +23,5 @@ const
 const
 	MAP_START = "S",
 	MAP_END = "E",
-	MAP_BLOCK = "#";
+	MAP_BLOCK = "#",
+	MAP_END_COIN = "C";

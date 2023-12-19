@@ -18,6 +18,13 @@ class Player
 		$this->Pos_y = $y;
 	}
 
+	public function getPosition() {
+		return [
+			$this->Pos_x,
+			$this->Pos_y
+		];
+	}
+
 	public function clean_position() {
 		echo "\e[" . 2 + $this->Pos_y . ";" . 2 + $this->Pos_x . "H" . $this->Level::AIR;
 	}
@@ -34,7 +41,7 @@ class Player
 			return false;
 		}
 		// @ ignore warning, allowing to quickly check if it is outside borders
-		
+
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
 		return ($cell === null || $cell === "") ?
 			false :
@@ -42,6 +49,10 @@ class Player
 	}
 	public function isOnGround() {
 		return !$this->isCellFree(0, 1);
+	}
+
+	public function getCell() {
+		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x];
 	}
 	public function moveCursor($x, $y) {
 		$this->clean_position();

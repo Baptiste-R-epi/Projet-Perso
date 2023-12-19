@@ -52,7 +52,7 @@ class Game
 
 		while ($this->loadLevel($this->level)) {
 			while (!$this->Level_board->isWin()) {
-				usleep(200000);
+				usleep(100000);
 				$order = $this->getOrder();
 
 				if (($back = $this->Level_board->isLost()) !== false) {
