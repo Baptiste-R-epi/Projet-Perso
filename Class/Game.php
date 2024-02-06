@@ -1,12 +1,13 @@
 <?php
 include_once("Level.php");
+include_once("Config.php");
 
 class Game
 {
 	private $level;
 	private $Level_board;
-	public function __construct() {
-		$this->level = 1;
+	public function __construct($level = 1) {
+		$this->level = $level;
 		$this->Level_board = new Level();
 	}
 
@@ -24,7 +25,7 @@ class Game
 	public function getOrder() {
 		$key = fgets(STDIN);
 		$result = [];
-		preg_match("/\e(\[[ABCD])?|[ aqzwd]|/", $key, $result);
+		preg_match("/\e(\[[ABCD])?|["."t"."]|/", $key, $result);
 
 		switch ($result[0]) {
 			case "\e":

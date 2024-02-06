@@ -8,7 +8,7 @@ class Player
 	private $Pos_x;
 	private $Pos_y;
 	private $jump = 0;
-	public const CURSOR = DISP_CURSOR;
+	public const CURSOR = DISPLAY_CURSOR;
 
 	public function __construct(Level $level) {
 		$this->Level = $level;
@@ -110,7 +110,7 @@ class Player
 			}
 			$this->jump = 0;
 		}
-		if ($this->isCellFree(0, 1)) {
+		if (!$this->isOnGround()) {
 			$this->moveCursor(0, 1);
 		}
 	}

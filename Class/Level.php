@@ -5,17 +5,17 @@ include_once("config.php");
 class Level
 {
 	public const MAP_START = MAP_START;
-	public const END = DISP_END;
+	public const END = DISPLAY_END;
 	public const MAP_END = MAP_END;
-	public const BLOCK = DISP_BLOCK;
+	public const BLOCK = DISPLAY_BLOCK;
 	public const MAP_BLOCK = MAP_BLOCK;
-	public const END_COIN = DISP_END_COIN;
+	public const END_COIN = DISPLAY_END_COIN;
 	public const MAP_END_COIN = MAP_END_COIN;
-	public const DISP_END_COIN = DISP_END_COIN;
-	public const SPIKE = DISP_SPIKE;
-	public const HOLE = DISP_HOLE;
-	public const AIR = DISP_AIR;
-	public const BORDER = DISP_BORDER;
+	public const DISPLAY_END_COIN = DISPLAY_END_COIN;
+	public const SPIKE = DISPLAY_SPIKE;
+	public const HOLE = DISPLAY_HOLE;
+	public const AIR = DISPLAY_AIR;
+	public const BORDER = DISPLAY_BORDER;
 
 	private $Game_board = [];
 	private $End_Coin = 0;
