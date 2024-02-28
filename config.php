@@ -4,13 +4,14 @@
 // String must be at least 1 character long.
 
 const
-	DISPLAY_CURSOR = "ǿǿǿOOO",
+	DISPLAY_CURSOR = "oooOOO",
 	DISPLAY_END = "*",
 	DISPLAY_BLOCK = "#",
-	DISPLAY_END_COIN = "CCOO00",
+	DISPLAY_END_COIN = "TTYY",
+	DISPLAY_SCORE_COIN = "SS$$",
 	DISPLAY_SPIKE = "^",
 	DISPLAY_AIR = " ",
-	DISPLAY_BUMPER = "|",
+	DISPLAY_BUMPER = "HHHMMM",
 	DISPLAY_BORDER = "#";
 
 
@@ -22,6 +23,7 @@ const
 	MAP_END = "E",
 	MAP_BLOCK = "#",
 	MAP_END_COIN = "C",
+	MAP_SCORE_COIN = "P",
 	MAP_SPIKE = "0",
 	MAP_BUMPER = "B";
 

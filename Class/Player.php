@@ -28,14 +28,14 @@ class Player
 		// @ ignore warning, allowing to quickly check if it is outside borders
 
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
-		return ($cell !== null && $cell !== "BLOCK");
+		return ($cell !== null && $cell !== "BLOCK" && $cell !== "BUMPER");
 	}
 	public function isOnGround() {
 		return !$this->isCellFree(0, 1);
 	}
 
-	public function getCell() {
-		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x];
+	public function getCell($x = 0, $y = 0) {
+		return $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x] ?? "BORDER";
 	}
 	public function moveCursor($x, $y) {
 		$this->Pos_x += $x;
@@ -81,6 +81,10 @@ class Player
 	public function gravity() {
 		if ($this->Level->isWin()) {
 			return;
+		}
+
+		if ($this->getCell(0, 1) == "BUMPER") {
+			$this->jump = 6;
 		}
 
 		if ($this->jump > 0) {
