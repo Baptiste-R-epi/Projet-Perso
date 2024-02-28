@@ -4,13 +4,12 @@ include_once("Level.php");
 include_once("config.php");
 class Player
 {
-	private $Level;
-	private $Pos_x;
-	private $Pos_y;
-	private $jump = 0;
-	public const CURSOR = DISPLAY_CURSOR;
+	private Level $Level;
+	private int $Pos_x;
+	private int $Pos_y;
+	private int $jump = 0;
 
-	public function __construct(Level $level) {
+	public function set_level(Level $level) {
 		$this->Level = $level;
 	}
 	public function setPosition($x, $y) {
@@ -25,27 +24,11 @@ class Player
 		];
 	}
 
-	public function clean_position() {
-		echo "\e[" . 2 + $this->Pos_y . ";" . 2 + $this->Pos_x . "H" . $this->Level::AIR;
-	}
-
-	public function print_cursor() {
-		echo "\e[" . 2 + $this->Pos_y . ";" . 2 + $this->Pos_x . "H" . $this::CURSOR;
-	}
 	public function isCellFree($x, $y) {
-		// must manage differences on arrays and strings
-		// array[-1] gives null ; string[-1] gives last character
-		// array[inf] gives null ; string[inf] gives ""
-		// Pos_x is string, Pos_y is array
-		if ($this->Pos_x + $x < 0) {
-			return false;
-		}
 		// @ ignore warning, allowing to quickly check if it is outside borders
 
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
-		return ($cell === null || $cell === "") ?
-			false :
-			$cell != $this->Level::BLOCK;
+		return ($cell !== null && $cell !== "BLOCK");
 	}
 	public function isOnGround() {
 		return !$this->isCellFree(0, 1);
@@ -55,10 +38,8 @@ class Player
 		return $this->Level->getBoard()[$this->Pos_y][$this->Pos_x];
 	}
 	public function moveCursor($x, $y) {
-		$this->clean_position();
 		$this->Pos_x += $x;
 		$this->Pos_y += $y;
-		$this->print_cursor();
 	}
 
 	public function moveLeft() {

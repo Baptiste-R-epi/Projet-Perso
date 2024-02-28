@@ -1,70 +1,55 @@
 <?php
-include_once("Level.php");
-include_once("Config.php");
+include_once "Level.php";
+include_once "Config.php";
+include_once "Player.php";
 
 class Game
 {
-	private $level;
-	private $Level_board;
-	public function __construct($level = 1) {
+	private Config $config;
+	private int $level;
+	private Level $Level_board;
+	private Player $player;
+	public function __construct($config, $level = 1) {
+		$this->player = new Player;
+		$this->Level_board = new Level($config);
+		$this->player->set_level($this->Level_board);
+		$this->Level_board->setPlayer($this->player);
+		$this->config = $config;
 		$this->level = $level;
-		$this->Level_board = new Level();
 	}
 
-	public function loadLevel($level) {
+	public function load_level($level) {
 		$path = "Levels/Level_" . str_pad($level, 2, "0", STR_PAD_LEFT) . ".txt";
 		if (!file_exists($path)) {
 			return false;
 		}
 
 		$this->Level_board->setBoard(file_get_contents($path));
-		$this->Level_board->displayStartingBoard();
+		$this->Level_board->displayBoard();
 		return true;
 	}
 
-	public function getOrder() {
-		$key = fgets(STDIN);
-		$result = [];
-		preg_match("/\e(\[[ABCD])?|["."t"."]|/", $key, $result);
-
-		switch ($result[0]) {
-			case "\e":
-				return "ESC";
-			case " ":
-			case "z":
-			case "w":
-			case "\e[A":
-				return "UP";
-			case "d":
-			case "\e[C":
-				return "RIGHT";
-			case "q":
-			case "a":
-			case "\e[D":
-				return "LEFT";
-		}
-		return "NONE";
-	}
-
-	public function startGame() {
+	public function start_game() {
 		stream_set_blocking(STDIN, 0);
 		system("stty cbreak -echo");
 		echo "\e[?25l";
 
-		while ($this->loadLevel($this->level)) {
+		while ($this->load_level($this->level)) {
 			while (!$this->Level_board->isWin()) {
 				usleep(100000);
-				$order = $this->getOrder();
+				$order = $this->config->get_order();
 
-				if (($back = $this->Level_board->isLost()) !== false) {
-					$this->level -= 1 + $back;
+				if ($this->Level_board->isLost()) {
+					$this->level --;
 					break;
 				}
-				
+
 				if ($order == "ESC") {
 					break 2;
 				}
 				$this->Level_board->play($order);
+				$this->Level_board->displayBoard();
+				$this->config->display_data_next_cycle();
 
 			}
 			$this->level <= 0 ? $this->level = 1 : $this->level++;

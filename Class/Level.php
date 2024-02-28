@@ -1,27 +1,21 @@
 <?php
 
-include_once("Player.php");
-include_once("config.php");
 class Level
 {
-	public const MAP_START = MAP_START;
-	public const END = DISPLAY_END;
-	public const MAP_END = MAP_END;
-	public const BLOCK = DISPLAY_BLOCK;
-	public const MAP_BLOCK = MAP_BLOCK;
-	public const END_COIN = DISPLAY_END_COIN;
-	public const MAP_END_COIN = MAP_END_COIN;
-	public const DISPLAY_END_COIN = DISPLAY_END_COIN;
-	public const SPIKE = DISPLAY_SPIKE;
-	public const HOLE = DISPLAY_HOLE;
-	public const AIR = DISPLAY_AIR;
-	public const BORDER = DISPLAY_BORDER;
-
+	private $config;
 	private $Game_board = [];
 	private $End_Coin = 0;
 	private $Board_Width = 1;
 	private $Board_Height = 1;
-	private $Player;
+	private $player;
+
+	public function __construct(Config $config) {
+		$this->config = $config;
+	}
+
+	public function setPlayer(PLayer $player) {
+		$this->player = $player;
+	}
 
 	public function getBoard() {
 		return $this->Game_board;
@@ -34,137 +28,95 @@ class Level
 		return $this->Board_Height;
 	}
 
-	public function __construct() {
-		$this->Player = new Player($this);
-	}
-	public function setBoard($level_content) {
-		$board = [];
+	public function setBoard(string $level_content) {
+		$this->Game_board = [];
 		$this->End_Coin = 0;
 		$level_content = explode("\n", $level_content);
 
 		$this->Board_Height = sizeof($level_content);
 		$this->Board_Width = strlen($level_content[0]);
 
-		foreach ($level_content as $line) {
-			// Extend or reduce line to match first line.
-			$line = substr($line, 0, $this->Board_Width);
-			$line = str_pad($line
-				, $this->Board_Width
-				, $this::AIR
-			);
-
-			// Place player at the start if it exists.
-			if (($pos = strpos($line, $this::MAP_START)) !== false) {
-				$this->Player->setPosition($pos, sizeof($board));
+		for ($i = 0; $i < $this->Board_Height; $i++) {
+			$line = mb_str_split($level_content[$i]);
+			for ($j = 0; $j < $this->Board_Width; $j++) {
+				@$line[$j] = $this->config->get_type_from_map($line[$j]);
+				switch ($line[$j]) {
+					case "COIN":
+						$this->End_Coin++;
+						break;
+					case "START":
+						$this->player->setPosition($j, $i);
+						break;
+				}
 			}
-
-			// Clear unreferrenced chars to empty space.
-			$line = preg_replace("/[^\d"
-				. $this::MAP_END
-				. $this::MAP_BLOCK
-				. $this::MAP_END_COIN
-				. "]/"
-				, $this::AIR
-				, $line
-			);
-
-			// Count Ending coins.
-			$this->End_Coin += substr_count($line, $this::MAP_END_COIN);
-
-
-			$board[] = $line;
+			$this->Game_board[] = $line;
 		}
-
-		$this->Game_board = $board;
-
 	}
 
-	public function emptyCell($x, $y) {
-		$this->Game_board[$y][$x] = $this::AIR;
+	public function empty_cell(int $x, int $y) {
+		$this->Game_board[$y][$x] = "AIR";
 	}
 
-	public function displayStartingBoard() {
+	public function displayBoard() {
 		// Clear screen
 		echo "\e[H\e[J";
 		// Draw upper border
-		echo (str_repeat($this::BORDER, $this->Board_Width + 2) . "\n");
+		$border = $this->config->get_display_char_from_type("BORDER");
+		echo (str_repeat($border, $this->Board_Width + 2) . "\n");
 
+		// Draw main screen
 		for ($i = 0; $i < $this->Board_Height; $i++) {
-			$line = $this->Game_board[$i];
-			if ($i != $this->Board_Height - 1) {
-				$line = preg_replace("/[1-9]/", $this::HOLE, $line);
-			} else {
-				$line = preg_replace("/[1-9]/", $this::AIR, $line);
+			echo $border;
+			for ($j = 0; $j < $this->Board_Width; $j++) {
+				echo $this->config->get_display_char_from_type(
+					$this->Game_board[$i][$j]
+				);
 			}
-			$line = strtr($line
-				, $this::MAP_END
-				. $this::MAP_BLOCK
-				. $this::MAP_END_COIN
-				. "0"
-
-				, ($this->End_Coin == 0 ? $this::END : $this::AIR)
-				. $this::BLOCK
-				. $this::END_COIN
-				. $this::SPIKE
-			);
-
-			echo (""
-				. $this::BORDER
-				. $line
-				. $this::BORDER
-				. "\n"
-			);
+			echo $border . "\n";
 		}
 
-		$under_border = $this->Game_board[$this->Board_Height - 1];
-		for ($i = 0; $i <= strlen($under_border) - 1; $i++) {
-			$under_border[$i] = (preg_match("/[1-9]/", $under_border[$i]) ? $this::AIR : $this::BORDER);
-		}
+		// Draw lower border
+		echo (str_repeat($border, $this->Board_Width + 2) . "\n");
+		
+		// Draw player
+		$player = $this->player->getPosition();
+		
+		echo "\e[" . 2 + $player[1] . ";" . 2 + $player[0] . "H" . $this->config->get_display_char_from_type("CURSOR");
 
-		echo $this::BORDER, $under_border, $this::BORDER;
-
-		$this->Player->print_cursor();
 	}
 
 	public function isWin() {
 		return (
 			$this->End_Coin == 0 &&
-			$this->Player->getCell() == $this::MAP_END
+			$this->player->getCell() == "END"
 		);
 	}
 
 	public function isLost() {
-		if (is_numeric($back = $this->Player->getCell())) {
-			return $back;
-		}
-		return false;
+		return $this->player->getCell() == "SPIKE";
 	}
 
 	public function collectCoin() {
-		if ($this->Player->getCell() != $this::END_COIN)
+		if ($this->player->getCell() != "COIN")
 			return;
-		$player_pos = $this->Player->getPosition();
-		$this->emptyCell($player_pos[0], $player_pos[1]);
+		$player_pos = $this->player->getPosition();
+		$this->empty_cell($player_pos[0], $player_pos[1]);
 		$this->End_Coin--;
-
-		if ($this->End_Coin == 0) {
-			$this->displayStartingBoard();
-		}
 	}
 
-	public function play($action = "NONE") {
+	public function play(string $action = "NONE") {
 		switch ($action) {
 			case "LEFT":
-				$this->Player->moveLeft();
+				$this->player->moveLeft();
 				break;
 			case "RIGHT":
-				$this->Player->moveRight();
+				$this->player->moveRight();
 				break;
 			case "UP":
-				$this->Player->moveUp();
+				$this->player->moveUp();
 				break;
 		}
-		$this->Player->gravity();
+		$this->player->gravity();
 		$this->collectCoin();
 	}
 }

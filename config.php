@@ -2,29 +2,28 @@
 
 // The DISPLAY config defines what the game will looks like.
 // String must be at least 1 character long.
-// Holes put on the ground will not display, but will also not display the cases below.
 
 const
-	DISPLAY_CURSOR = "ǿ",
+	DISPLAY_CURSOR = "ǿǿǿOOO",
 	DISPLAY_END = "*",
 	DISPLAY_BLOCK = "#",
-	DISPLAY_END_COIN = "C",
-	DISPLAY_AIR = " ",
-	DISPLAY_BORDER = "#",
+	DISPLAY_END_COIN = "CCOO00",
 	DISPLAY_SPIKE = "^",
-	DISPLAY_HOLE = "_";
+	DISPLAY_AIR = " ",
+	DISPLAY_BUMPER = "|",
+	DISPLAY_BORDER = "#";
 
 
 // The MAP config defines what must be fed in the levels to be recognize as different elements.
-// Since it is used in a regex, please do not use . / * + - or anything which might conflict.
-// String must be 1 character long.
-// Spike are always a 0. Holes are a number equal to the number of levels you loose.
+// String must be 1 character long. Do not use strange characters like "ǿ".
 
 const
 	MAP_START = "S",
 	MAP_END = "E",
 	MAP_BLOCK = "#",
-	MAP_END_COIN = "C";
+	MAP_END_COIN = "C",
+	MAP_SPIKE = "0",
+	MAP_BUMPER = "B";
 
 
 // The CONTROL config defines what keys in the keyboard are link to what action.

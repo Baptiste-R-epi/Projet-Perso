@@ -22,8 +22,12 @@ function math_lcm(...$inputs) {
 			if ($value % 2 == 0) {
 				$value /= 2;
 				$multiple = true;
-				if ($value == 1)
+
+				if ($value == 1) {
 					unset($inputs[$key]);
+				} else {
+					$inputs[$key] = $value;
+				}
 			}
 		}
 
