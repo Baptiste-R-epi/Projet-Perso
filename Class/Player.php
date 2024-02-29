@@ -1,7 +1,6 @@
 <?php
 
-include_once("Level.php");
-include_once("config.php");
+include_once "Level.php";
 class Player
 {
 	private Level $Level;
@@ -28,7 +27,7 @@ class Player
 		// @ ignore warning, allowing to quickly check if it is outside borders
 
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
-		return ($cell !== null && $cell !== "BLOCK" && $cell !== "BUMPER");
+		return($cell !== null && $cell !== "BLOCK" && $cell !== "BUMPER");
 	}
 	public function isOnGround() {
 		return !$this->isCellFree(0, 1);

@@ -1,7 +1,7 @@
 <?php
-include_once("config.php");
-include_once("Functions/Error_Manager.php");
-include_once("Functions/Lcm.php");
+include_once "config.php";
+include_once "Functions/Error_Manager.php";
+include_once "Functions/Lcm.php";
 
 class Config
 {
@@ -51,7 +51,7 @@ class Config
 		stop_if_error();
 	}
 
-	private function set_one_display (string $sprite, string $format) {
+	private function set_one_display(string $sprite, string $format) {
 		$sprite = mb_str_split($sprite);
 		for ($i = 0; $i < sizeof($sprite); $i++) {
 			$sprite[$i] = "\e[" . $format . "m" . $sprite[$i] . "\e[0m";
