@@ -6,13 +6,27 @@
 const
 	DISPLAY_CURSOR = "oooOOO",
 	DISPLAY_END = "*",
-	DISPLAY_BLOCK = "#",
+	DISPLAY_BLOCK = "█",
 	DISPLAY_END_COIN = "TTYY",
 	DISPLAY_SCORE_COIN = "SS$$",
 	DISPLAY_SPIKE = "^",
 	DISPLAY_AIR = " ",
 	DISPLAY_BUMPER = "HHHMMM",
-	DISPLAY_BORDER = "#";
+	DISPLAY_BORDER = "█";
+
+
+// The associated color or format for each element in the game.
+
+const
+	COLOR_CURSOR = "31",
+	COLOR_END = "0",
+	COLOR_BLOCK = "90",
+	COLOR_END_COIN = "0",
+	COLOR_SCORE_COIN = "33",
+	COLOR_SPIKE = "0",
+	COLOR_AIR = "0",
+	COLOR_BUMPER = "0",
+	COLOR_BORDER = "90";
 
 
 // The MAP config defines what must be fed in the levels to be recognize as different elements.
@@ -33,7 +47,7 @@ const
 // CONTROL_UP is for navigating in menu and jumping in game.
 // CONTROL_DOWN is only usefull in menu.
 
-const 
+const
 	CONTROL_LEFT = "aq",
 	CONTROL_RIGHT = "d",
 	CONTROL_UP = "zw ",

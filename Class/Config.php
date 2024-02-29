@@ -50,17 +50,25 @@ class Config
 		}
 		stop_if_error();
 	}
+
+	private function set_one_display (string $sprite, string $format) {
+		$sprite = mb_str_split($sprite);
+		for ($i = 0; $i < sizeof($sprite); $i++) {
+			$sprite[$i] = "\e[" . $format . "m" . $sprite[$i] . "\e[0m";
+		}
+		return $sprite;
+	}
 	private function set_display() {
 		$this->allDisplay = [
-			"CURSOR" => mb_str_split(DISPLAY_CURSOR),
-			"END" => mb_str_split(DISPLAY_END),
-			"BLOCK" => mb_str_split(DISPLAY_BLOCK),
-			"END_COIN" => mb_str_split(DISPLAY_END_COIN),
-			"SCORE_COIN" => mb_str_split(DISPLAY_SCORE_COIN),
-			"AIR" => mb_str_split(DISPLAY_AIR),
-			"BORDER" => mb_str_split(DISPLAY_BORDER),
-			"SPIKE" => mb_str_split(DISPLAY_SPIKE),
-			"BUMPER" => mb_str_split(DISPLAY_BUMPER),
+			"CURSOR" => $this->set_one_display(DISPLAY_CURSOR, COLOR_CURSOR),
+			"END" => $this->set_one_display(DISPLAY_END, COLOR_END),
+			"BLOCK" => $this->set_one_display(DISPLAY_BLOCK, COLOR_BLOCK),
+			"END_COIN" => $this->set_one_display(DISPLAY_END_COIN, COLOR_END_COIN),
+			"SCORE_COIN" => $this->set_one_display(DISPLAY_SCORE_COIN, COLOR_SCORE_COIN),
+			"AIR" => $this->set_one_display(DISPLAY_AIR, COLOR_AIR),
+			"BORDER" => $this->set_one_display(DISPLAY_BORDER, COLOR_BORDER),
+			"SPIKE" => $this->set_one_display(DISPLAY_SPIKE, COLOR_SPIKE),
+			"BUMPER" => $this->set_one_display(DISPLAY_BUMPER, COLOR_BUMPER),
 		];
 		$this->update_display();
 	}
