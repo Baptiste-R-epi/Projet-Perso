@@ -5,8 +5,10 @@ class Level
 	private $config;
 	private $Game_board = [];
 	private $End_Coin = 0;
+	public $Score = 0;
 	private $Board_Width = 1;
 	private $Board_Height = 1;
+	public $starting_position = [0, 0];
 	private $player;
 
 	public function __construct(Config $config) {
@@ -41,16 +43,17 @@ class Level
 			for ($j = 0; $j < $this->Board_Width; $j++) {
 				@$line[$j] = $this->config->get_type_from_map($line[$j]);
 				switch ($line[$j]) {
-					case "COIN":
+					case "END_COIN":
 						$this->End_Coin++;
 						break;
 					case "START":
-						$this->player->setPosition($j, $i);
+						$this->starting_position = [$j, $i];
 						break;
 				}
 			}
 			$this->Game_board[] = $line;
 		}
+		$this->player->setPosition($this->starting_position);
 	}
 
 	public function empty_cell(int $x, int $y) {
@@ -60,6 +63,10 @@ class Level
 	public function displayBoard() {
 		// Clear screen
 		echo "\e[H\e[J";
+
+		// Draw score
+		echo $this->config->get_display_char_from_type("SCORE_COIN") . " : " . $this->Score . "\n\n";
+
 		// Draw upper border
 		$border = $this->config->get_display_char_from_type("BORDER");
 		echo (str_repeat($border, $this->Board_Width + 2) . "\n");
@@ -77,16 +84,15 @@ class Level
 
 		// Draw lower border
 		echo (str_repeat($border, $this->Board_Width + 2) . "\n");
-		
+
 		// Draw player
 		$player = $this->player->getPosition();
-		
-		echo "\e[" . 2 + $player[1] . ";" . 2 + $player[0] . "H" . $this->config->get_display_char_from_type("CURSOR");
+		echo "\e[" . 4 + $player[1] . ";" . 2 + $player[0] . "H" . $this->config->get_display_char_from_type("CURSOR");
 
 	}
 
 	public function isWin() {
-		return (
+		return(
 			$this->End_Coin == 0 &&
 			$this->player->getCell() == "END"
 		);
@@ -97,11 +103,17 @@ class Level
 	}
 
 	public function collectCoin() {
-		if ($this->player->getCell() != "COIN")
-			return;
 		$player_pos = $this->player->getPosition();
-		$this->empty_cell($player_pos[0], $player_pos[1]);
-		$this->End_Coin--;
+
+		switch ($this->player->getCell()) {
+			case "END_COIN":
+				$this->End_Coin--;
+				$this->empty_cell($player_pos[0], $player_pos[1]);
+				break;
+			case "SCORE_COIN":
+				$this->Score++;
+				$this->empty_cell($player_pos[0], $player_pos[1]);
+		}
 	}
 
 	public function play(string $action = "NONE") {

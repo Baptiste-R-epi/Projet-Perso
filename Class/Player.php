@@ -12,9 +12,9 @@ class Player
 	public function set_level(Level $level) {
 		$this->Level = $level;
 	}
-	public function setPosition($x, $y) {
-		$this->Pos_x = $x;
-		$this->Pos_y = $y;
+	public function setPosition(array $pos) {
+		$this->Pos_x = $pos[0];
+		$this->Pos_y = $pos[1];
 	}
 
 	public function getPosition() {
@@ -83,9 +83,6 @@ class Player
 			return;
 		}
 
-		if ($this->getCell(0, 1) == "BUMPER") {
-			$this->jump = 6;
-		}
 
 		if ($this->jump > 0) {
 			if ($this->isCellFree(0, -1)) {
@@ -97,6 +94,10 @@ class Player
 		}
 		if (!$this->isOnGround()) {
 			$this->moveCursor(0, 1);
+		}
+
+		if ($this->getCell(0, 1) == "BUMPER") {
+			$this->jump = 6;
 		}
 	}
 }

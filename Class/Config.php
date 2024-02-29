@@ -13,7 +13,8 @@ class Config
 		MAP_START => "START",
 		MAP_END => "END",
 		MAP_BLOCK => "BLOCK",
-		MAP_END_COIN => "COIN",
+		MAP_END_COIN => "END_COIN",
+		MAP_SCORE_COIN => "SCORE_COIN",
 		MAP_SPIKE => "SPIKE",
 		MAP_BUMPER => "BUMPER",
 	];
@@ -54,7 +55,8 @@ class Config
 			"CURSOR" => mb_str_split(DISPLAY_CURSOR),
 			"END" => mb_str_split(DISPLAY_END),
 			"BLOCK" => mb_str_split(DISPLAY_BLOCK),
-			"COIN" => mb_str_split(DISPLAY_END_COIN),
+			"END_COIN" => mb_str_split(DISPLAY_END_COIN),
+			"SCORE_COIN" => mb_str_split(DISPLAY_SCORE_COIN),
 			"AIR" => mb_str_split(DISPLAY_AIR),
 			"BORDER" => mb_str_split(DISPLAY_BORDER),
 			"SPIKE" => mb_str_split(DISPLAY_SPIKE),
@@ -64,7 +66,7 @@ class Config
 	}
 	private function update_one_display($string) {
 		return $this->allDisplay[$string][
-				$this->spriteCycle % sizeof($this->allDisplay[$string])
+			$this->spriteCycle % sizeof($this->allDisplay[$string])
 		];
 	}
 	private function update_display() {
@@ -72,7 +74,8 @@ class Config
 			"CURSOR" => $this->update_one_display("CURSOR"),
 			"END" => $this->update_one_display("END"),
 			"BLOCK" => $this->update_one_display("BLOCK"),
-			"COIN" => $this->update_one_display("COIN"),
+			"END_COIN" => $this->update_one_display("END_COIN"),
+			"SCORE_COIN" => $this->update_one_display("SCORE_COIN"),
 			"AIR" => $this->update_one_display("AIR"),
 			"BORDER" => $this->update_one_display("BORDER"),
 			"SPIKE" => $this->update_one_display("SPIKE"),
@@ -104,13 +107,15 @@ class Config
 	public function get_order() {
 		$key = fgets(STDIN);
 		$result = [];
-		preg_match("/\e(\[[ABCD])?|[" . $this::CONTROL["ALL"] . "]|/", $key, $result);
+		preg_match("/\e(\[[ABCD])?|[" . $this::CONTROL["ALL"] . "\n]|/", $key, $result);
 
 		switch (true) {
 			default:
 			case $result[0] == "":
 				return "NONE";
-			case $result[0] =="\e":
+			case $result[0] == "\n":
+				return "ENTER";
+			case $result[0] == "\e":
 				return "ESC";
 			case $result[0] == "\e[A" || str_contains($this::CONTROL["UP"], $result[0]):
 				return "UP";
@@ -120,7 +125,7 @@ class Config
 				return "RIGHT";
 			case $result[0] == "\e[D" || str_contains($this::CONTROL["LEFT"], $result[0]):
 				return "LEFT";
-			
+
 		}
 	}
 }

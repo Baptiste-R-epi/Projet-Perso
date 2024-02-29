@@ -29,19 +29,15 @@ class Game
 		return true;
 	}
 
-	public function start_game() {
-		stream_set_blocking(STDIN, 0);
-		system("stty cbreak -echo");
-		echo "\e[?25l";
-
+	function play_game() {
 		while ($this->load_level($this->level)) {
 			while (!$this->Level_board->isWin()) {
 				usleep(100000);
 				$order = $this->config->get_order();
 
 				if ($this->Level_board->isLost()) {
-					$this->level --;
-					break;
+					$this->player->setPosition($this->Level_board->starting_position);
+					$this->Level_board->Score--;
 				}
 
 				if ($order == "ESC") {
@@ -52,8 +48,16 @@ class Game
 				$this->config->display_data_next_cycle();
 
 			}
-			$this->level <= 0 ? $this->level = 1 : $this->level++;
+			$this->level++;
 		}
+	}
+
+	public function start_game() {
+		stream_set_blocking(STDIN, 0);
+		system("stty cbreak -echo");
+		echo "\e[?25l";
+
+		$this->play_game();
 		system("stty cbreak echo");
 		echo "\e[?25h\n\e[A";
 	}
