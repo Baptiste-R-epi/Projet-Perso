@@ -51,4 +51,5 @@ const
 	CONTROL_LEFT = "aq",
 	CONTROL_RIGHT = "d",
 	CONTROL_UP = "zw ",
-	CONTROL_DOWN = "s";
+	CONTROL_DOWN = "s",
+	CONTROL_ENTER = "";

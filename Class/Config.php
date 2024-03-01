@@ -23,7 +23,8 @@ class Config
 		"RIGHT" => CONTROL_RIGHT,
 		"UP" => CONTROL_UP,
 		"DOWN" => CONTROL_DOWN,
-		"ALL" => CONTROL_LEFT . CONTROL_RIGHT . CONTROL_UP . CONTROL_DOWN,
+		"ENTER" => CONTROL_ENTER,
+		"ALL" => CONTROL_LEFT . CONTROL_RIGHT . CONTROL_UP . CONTROL_DOWN . CONTROL_ENTER
 	];
 
 	public function __construct() {
@@ -121,10 +122,10 @@ class Config
 			default:
 			case $result[0] == "":
 				return "NONE";
-			case $result[0] == "\n":
-				return "ENTER";
 			case $result[0] == "\e":
 				return "ESC";
+			case $result[0] == "\n" || str_contains($this::CONTROL["ENTER"], $result[0]):
+				return "ENTER";
 			case $result[0] == "\e[A" || str_contains($this::CONTROL["UP"], $result[0]):
 				return "UP";
 			case $result[0] == "\e[B" || str_contains($this::CONTROL["DOWN"], $result[0]):
