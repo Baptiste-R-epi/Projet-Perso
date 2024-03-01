@@ -43,6 +43,8 @@ class Menus_Manager
 			"  ║     Choose level       ║\n" .
 			"  ║                        ║\n" .
 			"  ║        Credits         ║\n" .
+			"  ║                        ║\n" .
+			"  ║         Exit           ║\n" .
 			"  ╚════════════════════════╝"
 		);
 
@@ -55,6 +57,10 @@ class Menus_Manager
 		$menu->add_selectionnable(0, 2, 12, 10, "Credits", function () {
 			return $this->credit_menu->use_menu();
 		});
+		$menu->add_selectionnable(0, 3, 13, 12, "Exit", function () {
+			return false;
+		});
+
 		$this->main_menu = $menu;
 	}
 
@@ -119,12 +125,12 @@ class Menus_Manager
 			"  ║      ║\n" .
 			"  ╚══════╝\n" .
 			"\n" .
-			"Jeux développer par Baptiste ROYER.\n" .
-			"Encouragement de son fidèle ami, Yoann JOB.\n" .
-			"Encouragement des jeunes Tech 1 :\n" .
-			"Corentin, Nathan, Axel, Mathéo, Thomas, Alan." .
-			"Suivi par Stanislas Hegron, dans le cadre de la formation Web@cademie.\n" .
-			"Vous êtes tous des beau gosses !!!\n"
+			"Game developped by Baptiste ROYER.\n" .
+			"Kind support from my dearest friend, Yoann JOB.\n" .
+			"Warm support from my Tech 1 friends :\n" .
+			"Corentin, Nathan, Axel, Mathéo, Thomas, Alan.\n" .
+			"Followed by Stanislas Hegron, in the context of my Web@cademie formation.\n" .
+			"Ya'll pretty boyz !!!\n"
 		);
 
 		$menu->add_selectionnable(0, 0, 5, 2, "BACK", function () {
