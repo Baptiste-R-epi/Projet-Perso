@@ -9,16 +9,21 @@ class Menu
 	private array $content = [];
 	private array $selectedCoord = [0, 0];
 
-	// private string 
+	private string $background = "";
 
 	private $callbackOnEsc = false;
 	public function __construct(Config $config) {
 		$this->config = $config;
 	}
+
+	public function set_background($background) {
+		$this->background = $background;
+	}
+
 	public function add_selectionnable(int $menuX, int $menuY, int $screenX, int $screenY, string $label, ...$callback) {
 		$this->content[$menuX][$menuY] = new Selectionnable($label, $screenX, $screenY, ...$callback);
 	}
-	public function get_selected_callback() {
+	private function get_selected_callback() {
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1];
 		return $this->content[$x][$y]->get_callback();
@@ -31,6 +36,7 @@ class Menu
 	private function display_menu() {
 		// Clear screen
 		echo "\e[H\e[J";
+		echo $this->background;
 
 		for ($i = 0; $i < sizeof($this->content); $i++) {
 			for ($j = 0; $j < sizeof($this->content[$i]); $j++) {
