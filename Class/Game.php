@@ -9,16 +9,15 @@ class Game
 	private int $level;
 	private Level $Level_board;
 	private Player $player;
-	public function __construct($config, $level = 1) {
+	public function __construct($config) {
 		$this->player = new Player;
 		$this->Level_board = new Level($config);
 		$this->player->set_level($this->Level_board);
 		$this->Level_board->setPlayer($this->player);
 		$this->config = $config;
-		$this->level = $level;
 	}
 
-	public function load_level($level) {
+	private function load_level($level) {
 		$path = "Levels/Level_" . str_pad($level, 2, "0", STR_PAD_LEFT) . ".txt";
 		if (!file_exists($path)) {
 			return false;
@@ -29,7 +28,7 @@ class Game
 		return true;
 	}
 
-	function play_game() {
+	private function play_game() {
 		while ($this->load_level($this->level)) {
 			while (!$this->Level_board->isWin()) {
 				usleep(100000);
@@ -54,7 +53,7 @@ class Game
 		return true;
 	}
 
-	function refresh_congrate() {
+	private function refresh_congrate() {
 		$this->config->display_data_next_cycle();
 
 		// Store variables
@@ -97,7 +96,7 @@ class Game
 
 		echo "\e[16;13H";
 	}
-	function display_congrate() {
+	private function display_congrate() {
 		// Clear screen
 		echo "\e[H\e[J";
 
@@ -124,16 +123,11 @@ class Game
 		} while ($order != "ENTER" && $order != "ESC");
 	}
 
-	public function start_game() {
-		stream_set_blocking(STDIN, 0);
-		system("stty cbreak -echo");
-		echo "\e[?25l";
+	public function start_game($level = 1) {
+		$this->level = $level;
 
 		if ($this->play_game()) {
 			$this->display_congrate();
 		}
-
-		system("stty cbreak echo");
-		echo "\e[?25h\n\e[A";
 	}
 }
