@@ -54,7 +54,50 @@ class Game
 		return true;
 	}
 
-	function end_congrate() {
+	function refresh_congrate() {
+		$this->config->display_data_next_cycle();
+
+		// Store variables
+		$border = $this->config->get_display_char_from_type("BORDER");
+		$block = $this->config->get_display_char_from_type("BLOCK");
+		$player = $this->config->get_display_char_from_type("CURSOR");
+		$coin = $this->config->get_display_char_from_type("SCORE_COIN");
+		$spike = $this->config->get_display_char_from_type("SPIKE");
+
+		// Draw upper border
+		echo "\e[1;1H";
+		echo str_repeat($border, 33);
+
+		// Draw left & right border
+		for ($i = 2; $i <= 11; $i++) {
+			echo "\e[" . $i . ";1H";
+			echo $border;
+			echo "\e[" . $i . ";33H";
+			echo $border;
+		}
+
+		// Draw lower border
+		echo "\e[12;1H";
+		echo str_repeat($border, 33);
+
+		// Draw stage
+		echo "\e[8;15H";
+		echo $coin . $coin . $player . $coin . $coin;
+
+		echo "\e[9;14H";
+		echo str_repeat($block, 7);
+
+		echo "\e[10;13H";
+		echo $block;
+		echo "\e[10;21H";
+		echo $block;
+
+		echo "\e[11;13H";
+		echo $block . str_repeat($spike, 7) . $block;
+
+		echo "\e[16;13H";
+	}
+	function display_congrate() {
 		// Clear screen
 		echo "\e[H\e[J";
 
@@ -76,47 +119,8 @@ class Game
 		do {
 			usleep(100000);
 			$order = $this->config->get_order();
-			$this->config->display_data_next_cycle();
-
-			// Store variables
-			$border = $this->config->get_display_char_from_type("BORDER");
-			$block = $this->config->get_display_char_from_type("BLOCK");
-			$player = $this->config->get_display_char_from_type("CURSOR");
-			$coin = $this->config->get_display_char_from_type("SCORE_COIN");
-			$spike = $this->config->get_display_char_from_type("SPIKE");
-
-			// Draw upper border
-			echo "\e[1;1H";
-			echo str_repeat($border, 33);
-
-			// Draw left & right border
-			for ($i = 2; $i <= 11; $i++) {
-				echo "\e[" . $i . ";1H";
-				echo $border;
-				echo "\e[" . $i . ";33H";
-				echo $border;
-			}
-
-			// Draw lower border
-			echo "\e[12;1H";
-			echo str_repeat($border, 33);
-
-			// Draw stage
-			echo "\e[8;15H";
-			echo $coin . $coin . $player . $coin . $coin;
-
-			echo "\e[9;14H";
-			echo str_repeat($block, 7);
-
-			echo "\e[10;13H";
-			echo $block;
-			echo "\e[10;21H";
-			echo $block;
-
-			echo "\e[11;13H";
-			echo $block . str_repeat($spike, 7) . $block;
-
-			echo "\e[16;13H";
+			$this->refresh_congrate();
+			
 		} while ($order != "ENTER" && $order != "ESC");
 	}
 
@@ -126,7 +130,7 @@ class Game
 		echo "\e[?25l";
 
 		if ($this->play_game()) {
-			$this->end_congrate();
+			$this->display_congrate();
 		}
 
 		system("stty cbreak echo");
