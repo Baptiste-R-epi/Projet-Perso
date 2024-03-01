@@ -8,10 +8,9 @@ class Menu
 	private Config $config;
 	private array $content = [];
 	private array $selectedCoord = [0, 0];
-
 	private string $background = "";
-
 	private $callbackOnEsc = false;
+	
 	public function __construct(Config $config) {
 		$this->config = $config;
 	}

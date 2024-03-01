@@ -104,6 +104,10 @@ class Menus_Manager
 			}
 		}
 
+		$menu->overwrite_esc_behavior(function () {
+			return $this->main_menu->use_menu();
+		});
+
 		$this->level_menu = $menu;
 	}
 
@@ -124,6 +128,10 @@ class Menus_Manager
 		);
 
 		$menu->add_selectionnable(0, 0, 5, 2, "BACK", function () {
+			return $this->main_menu->use_menu();
+		});
+
+		$menu->overwrite_esc_behavior(function () {
 			return $this->main_menu->use_menu();
 		});
 
