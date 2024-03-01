@@ -14,6 +14,7 @@ class Player
 	public function setPosition(array $pos) {
 		$this->Pos_x = $pos[0];
 		$this->Pos_y = $pos[1];
+		$this->jump = 0;
 	}
 
 	public function getPosition() {
