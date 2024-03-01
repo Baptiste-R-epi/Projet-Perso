@@ -9,6 +9,7 @@ class Menu
 	private array $content = [];
 	private array $selectedCoord = [0, 0];
 	private string $background = "";
+	private int $last_line = 1;
 	private $callbackOnEsc = false;
 	
 	public function __construct(Config $config) {
@@ -17,6 +18,7 @@ class Menu
 
 	public function set_background($background) {
 		$this->background = $background;
+		$this->last_line = substr_count($background, "\n") + 2;
 	}
 
 	public function add_selectionnable(int $menuX, int $menuY, int $screenX, int $screenY, string $label, ...$callback) {
@@ -33,7 +35,7 @@ class Menu
 	}
 
 	private function display_menu() {
-		// Clear screen
+		// Clear screen and draw background
 		echo "\e[H\e[J";
 		echo $this->background;
 
@@ -52,11 +54,13 @@ class Menu
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1];
 		$this->content[$x][$y]->selected_display();
+		echo "\e[" . $this->last_line . ";0H";
 	}
 	private function unselect_current() {
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1];
 		$this->content[$x][$y]->basic_display();
+		echo "\e[" . $this->last_line . ";0H";
 	}
 
 	private function move_up() {
