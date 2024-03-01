@@ -14,8 +14,8 @@ class Selectionnable
 	}
 
 	public function basic_display() {
-		echo "\e[" . $this->screenPositionY . ";" . $this->screenPositionX . "H";
-		echo $this->label;
+		echo "\e[" . $this->screenPositionY . ";" . $this->screenPositionX - 1 . "H";
+		echo " " . $this->label . " ";
 	}
 
 	public function selected_display() {

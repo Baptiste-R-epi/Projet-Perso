@@ -9,6 +9,8 @@ class Menu
 	private array $content = [];
 	private array $selectedCoord = [0, 0];
 
+	// private string 
+
 	private $callbackOnEsc = false;
 	public function __construct(Config $config) {
 		$this->config = $config;
@@ -41,36 +43,80 @@ class Menu
 		}
 	}
 
+	private function select_current() {
+		$x = $this->selectedCoord[0];
+		$y = $this->selectedCoord[1];
+		$this->content[$x][$y]->selected_display();
+	}
+	private function unselect_current() {
+		$x = $this->selectedCoord[0];
+		$y = $this->selectedCoord[1];
+		$this->content[$x][$y]->basic_display();
+	}
+
 	private function move_up() {
+		$this->unselect_current();
+
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1] - 1;
+
+		if ($y == -1) {
+			$y = sizeof($this->content[$x]) - 1;
+		}
 		if (@$this->content[$x][$y]) {
 			$this->selectedCoord = [$x, $y];
 		}
+
+		$this->select_current();
 	}
 	private function move_down() {
+		$this->unselect_current();
+
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1] + 1;
+
 		if (@$this->content[$x][$y]) {
 			$this->selectedCoord = [$x, $y];
+		} elseif (@$this->content[$x][0]) {
+			$this->selectedCoord = [$x, 0];
 		}
+
+		$this->select_current();
+
 	}
 	private function move_left() {
+		$this->unselect_current();
+
 		$x = $this->selectedCoord[0] - 1;
 		$y = $this->selectedCoord[1];
+
+		if ($x == -1) {
+			$x = sizeof($this->content) - 1;
+		}
 		if (@$this->content[$x][$y]) {
 			$this->selectedCoord = [$x, $y];
 		}
+
+		$this->select_current();
 	}
 	private function move_right() {
+		$this->unselect_current();
+
 		$x = $this->selectedCoord[0] + 1;
 		$y = $this->selectedCoord[1];
+
 		if (@$this->content[$x][$y]) {
 			$this->selectedCoord = [$x, $y];
+		} elseif (@$this->content[0][$y]) {
+			$this->selectedCoord = [0, $y];
 		}
+
+		$this->select_current();
 	}
 
 	public function use_menu() {
+		$this->display_menu();
+
 		do {
 			usleep(100000);
 			$order = $this->config->get_order();
@@ -92,7 +138,6 @@ class Menu
 					$this->move_right();
 					break;
 			}
-			$this->display_menu();
 		} while ($order != "ENTER" && $order != "ESC");
 	}
 }
