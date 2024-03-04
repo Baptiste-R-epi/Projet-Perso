@@ -11,34 +11,74 @@ class Menu
 	private string $background = "";
 	private int $last_line = 1;
 	private $callbackOnEsc = false;
-	
+
+	/**
+	 * Take the config files (controls etc) to determine what are the controls to move around the menu.
+	 *
+	 * @param Config $config the config which contain the controls.
+	 */
 	public function __construct(Config $config) {
 		$this->config = $config;
 	}
 
-	public function set_background($background) {
+	/**
+	 * set_background() set the background image for the menu. As a default, there is no background.
+	 *
+	 * @param string $background the background to be set
+	 * @return void
+	 */
+	public function set_background(string $background) {
 		$this->background = $background;
 		$this->last_line = substr_count($background, "\n") + 2;
 	}
 
+	/**
+	 * add_selectionnable() is used to create new menu element the user will be able to select from. They are ordained in an internal table to determined how you are meant to move between them.
+	 *
+	 * @param integer $menuX the X position in the internal table. Start at 0.
+	 * @param integer $menuY the Y position in the internal table. Start at 0.
+	 * @param integer $screenX the X position on screen. Start at 1, from the upper left corner.
+	 * @param integer $screenY the Y position on screen. Start at 1, from the upper left corner.
+	 * @param string $label the displayed label on screen.
+	 * @param callable ...$callback what function (and its paramater(s)) should be called when you "click" on the selectionnable.
+	 * @return void
+	 */
 	public function add_selectionnable(int $menuX, int $menuY, int $screenX, int $screenY, string $label, ...$callback) {
 		$this->content[$menuX][$menuY] = new Selectionnable($label, $screenX, $screenY, ...$callback);
 	}
+
+	/**
+	 * Get the callable (and its parameter(s) if any) of the actually selected selectionnable of the menu.
+	 *
+	 * @return array[callable, ...any] the callable of the selectionnable.
+	 */
 	private function get_selected_callback() {
 		$x = $this->selectedCoord[0];
 		$y = $this->selectedCoord[1];
 		return $this->content[$x][$y]->get_callback();
 	}
 
+	/**
+	 * As a default, escaping a menu return false, not a function. overwrite_esc_behavior() allows you to choose a function to be called instead of the default behavior.
+	 *
+	 * @param array ...$callback the function (and its parameter(s) if any) to be called when you escape.
+	 * @return void
+	 */
 	public function overwrite_esc_behavior(...$callback) {
 		$this->callbackOnEsc = $callback;
 	}
 
+	/**
+	 * Considering all information given to the menu, prepare the basic display of the menu : its background, and all its selectionnables. 
+	 *
+	 * @return void
+	 */
 	private function display_menu() {
 		// Clear screen and draw background
 		echo "\e[H\e[J";
 		echo $this->background;
 
+		// Draw all selectionnable on screen at start
 		for ($i = 0; $i < sizeof($this->content); $i++) {
 			for ($j = 0; $j < sizeof($this->content[$i]); $j++) {
 				if ($this->selectedCoord == [$i, $j]) {
