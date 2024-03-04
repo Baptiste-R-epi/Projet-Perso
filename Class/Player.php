@@ -37,14 +37,14 @@ class Player
 	public function getCell($x = 0, $y = 0) {
 		return $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x] ?? "BORDER";
 	}
-	public function moveCursor($x, $y) {
+	private function move_player($x, $y) {
 		$this->Pos_x += $x;
 		$this->Pos_y += $y;
 	}
 
 	public function moveLeft() {
 		if ($this->isCellFree(-1, 0)) {
-			$this->moveCursor(-1, 0);
+			$this->move_player(-1, 0);
 		} elseif (
 			$this->isCellFree(0, -1) &&
 			$this->isCellFree(-1, -1) && (
@@ -52,14 +52,14 @@ class Player
 				$this->jump > 0
 			)
 		) {
-			$this->moveCursor(-1, -1);
+			$this->move_player(-1, -1);
 			$this->jump = 0;
 		}
 	}
 
 	public function moveRight() {
 		if ($this->isCellFree(1, 0)) {
-			$this->moveCursor(1, 0);
+			$this->move_player(1, 0);
 		} elseif (
 			$this->isCellFree(0, -1) &&
 			$this->isCellFree(1, -1) && (
@@ -67,7 +67,7 @@ class Player
 				$this->jump > 0
 			)
 		) {
-			$this->moveCursor(1, -1);
+			$this->move_player(1, -1);
 			$this->jump = 0;
 		}
 	}
@@ -87,13 +87,13 @@ class Player
 		if ($this->jump > 0) {
 			if ($this->isCellFree(0, -1)) {
 				$this->jump--;
-				$this->moveCursor(0, -1);
+				$this->move_player(0, -1);
 				return;
 			}
 			$this->jump = 0;
 		}
 		if (!$this->isOnGround()) {
-			$this->moveCursor(0, 1);
+			$this->move_player(0, 1);
 		}
 
 		if ($this->getCell(0, 1) == "BUMPER") {
