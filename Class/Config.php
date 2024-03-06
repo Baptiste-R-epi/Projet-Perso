@@ -42,9 +42,11 @@ class Config
 		array_shift($files);
 		array_shift($files);
 		foreach ($files as $file) {
-			include_once "Monster/" . $file;
-			$class = substr($file, 0, -4);
-			$this->monstersMap[$class::MAP_DISPLAY] = $class;
+			if (substr($file, -4) == ".php") {
+				include_once "Monster/" . $file;
+				$class = substr($file, 0, -4);
+				$this->monstersMap[$class::MAP_DISPLAY] = $class;
+			}
 		}
 	}
 
