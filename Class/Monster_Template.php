@@ -18,11 +18,11 @@ class Monster_Template
 	const ORDERS = ["WAIT"];
 	private array $actualOrder;
 
-	private string $move_left;
-	private string $move_right;
-	private string $move_down;
-	private string $move_up;
-	private string $gravity;
+	private string $move_left = "";
+	private string $move_right = "";
+	private string $move_down = "";
+	private string $move_up = "";
+	private string $gravity = "";
 	private function move_left() {
 		if (method_exists($this, $this->move_left)) {
 			$order = $this->move_left;
