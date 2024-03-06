@@ -107,7 +107,7 @@ class Config
 		foreach ($this->monstersMap as $monster) {
 			var_dump($monster);
 			var_dump($monster::SPRITE);
-			$this->monstersAllDisplay[$monster] = $this->set_one_display($monster::SPRITE, "0");
+			$this->monstersAllDisplay[$monster] = $this->set_one_display($monster::SPRITE, $monster::COLOR);
 			var_dump($this->monstersAllDisplay[$monster]);
 		}
 

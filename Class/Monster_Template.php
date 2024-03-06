@@ -13,6 +13,7 @@ class Monster_Template
 	const TYPE = "crawler";
 	const CAN_FALL = false;
 	const SPRITE = "";
+	const COLOR = "0";
 	const MAP_DISPLAY = "";
 	const ORDERS = ["WAIT"];
 	private array $actualOrder;

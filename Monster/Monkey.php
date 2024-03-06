@@ -7,6 +7,7 @@ class Monkey extends Monster_Template {
 	const TYPE = "climber";
 	const CAN_FALL = false;
 	const SPRITE = "nm";
+	const COLOR = "31";
 	const MAP_DISPLAY = "M";
 	const ORDERS = [
 		"RIGHT",
