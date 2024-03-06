@@ -1,15 +1,17 @@
 <?php
+include_once "Config.php";
 
 class Level
 {
-	private $config;
-	private $Game_board = [];
-	private $End_Coin = 0;
-	public $Score = 0;
-	private $Board_Width = 1;
-	private $Board_Height = 1;
-	public $starting_position = [0, 0];
-	private $player;
+	private Config $config;
+	private array $Game_board = [];
+	private int $End_Coin = 0;
+	public int $Score = 0;
+	private int $Board_Width = 1;
+	private int $Board_Height = 1;
+	public array $starting_position = [0, 0];
+	private Player $player;
+	private array $Monsters = [];
 
 	public function __construct(Config $config) {
 		$this->config = $config;
@@ -32,6 +34,7 @@ class Level
 
 	public function setBoard(string $level_content) {
 		$this->Game_board = [];
+		$this->Monsters = [];
 		$this->End_Coin = 0;
 		$level_content = explode("\n", $level_content);
 
@@ -41,15 +44,25 @@ class Level
 		for ($i = 0; $i < $this->Board_Height; $i++) {
 			$line = mb_str_split($level_content[$i]);
 			for ($j = 0; $j < $this->Board_Width; $j++) {
-				@$line[$j] = $this->config->get_type_from_map($line[$j]);
-				switch ($line[$j]) {
+				@$map_type = $this->config->get_type_from_map($line[$j]);
+				switch ($map_type) {
 					case "END_COIN":
 						$this->End_Coin++;
 						break;
 					case "START":
 						$this->starting_position = [$j, $i];
 						break;
+					case "OTHER":
+						@$monster_class = $this->config->get_monster_from_map($line[$j]);
+						if ($monster_class) {
+							$new_monster = new $monster_class();
+							$new_monster->set_level($this);
+							$new_monster->set_position([$j, $i]);
+							$this->Monsters[] = $new_monster;
+						}
+						$map_type = "AIR";
 				}
+				$line[$j] = $map_type;
 			}
 			$this->Game_board[] = $line;
 		}
@@ -87,8 +100,15 @@ class Level
 
 		// Draw player
 		$player = $this->player->getPosition();
-		echo "\e[" . 4 + $player[1] . ";" . 2 + $player[0] . "H" . $this->config->get_display_char_from_type("CURSOR");
+		echo "\e[" . 4 + $player[1] . ";" . 2 + $player[0] . "H" .
+			$this->config->get_display_char_from_type("CURSOR");
 
+		// Draw monsters
+		foreach ($this->Monsters as $monster) {
+			$position = $monster->get_position();
+			echo "\e[" . 4 + $position[1] . ";" . 2 + $position[0] . "H" .
+				$this->config->get_monster_display_from_name(get_class($monster));
+		}
 	}
 
 	public function isWin() {
@@ -99,7 +119,15 @@ class Level
 	}
 
 	public function isLost() {
-		return $this->player->getCell() == "SPIKE";
+		if ($this->player->getCell() == "SPIKE") {
+			return true;
+		}
+		foreach ($this->Monsters as $monster) {
+			if ($monster->get_position() == $this->player->getPosition()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function collectCoin() {
@@ -130,5 +158,10 @@ class Level
 		}
 		$this->player->gravity();
 		$this->collectCoin();
+
+		foreach ($this->Monsters as $monster) {
+			$monster->play();
+			$monster->gravity();
+		}
 	}
 }

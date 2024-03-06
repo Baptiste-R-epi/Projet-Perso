@@ -24,13 +24,13 @@ class Player
 		];
 	}
 
-	public function isCellFree($x, $y) {
+	private function isCellFree($x, $y) {
 		// @ ignore warning, allowing to quickly check if it is outside borders
 
 		@$cell = $this->Level->getBoard()[$this->Pos_y + $y][$this->Pos_x + $x];
 		return($cell !== null && $cell !== "BLOCK" && $cell !== "BUMPER");
 	}
-	public function isOnGround() {
+	private function isOnGround() {
 		return !$this->isCellFree(0, 1);
 	}
 

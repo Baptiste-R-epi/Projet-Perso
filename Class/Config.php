@@ -9,6 +9,9 @@ class Config
 	private int $spriteCycle = 0;
 	private array $allDisplay;
 	private array $currentDisplay;
+	private array $monstersMap;
+	private array $monstersAllDisplay;
+	private array $monstersCurrentDisplay;
 	const MAP = [
 		MAP_START => "START",
 		MAP_END => "END",
@@ -28,9 +31,25 @@ class Config
 	];
 
 	public function __construct() {
+		$this->set_monsters();
 		$this->set_display();
 		$this->error_manager();
 		$this->set_sprite_max_length();
+	}
+
+	private function set_monsters() {
+		$files = scandir("Monster");
+		array_shift($files);
+		array_shift($files);
+		foreach ($files as $file) {
+			include_once "Monster/" . $file;
+			$class = substr($file, 0, -4);
+			$this->monstersMap[$class::MAP_DISPLAY] = $class;
+		}
+	}
+
+	public function get_monster_from_map($character) {
+		return $this->monstersMap[$character] ?? false;
 	}
 
 	private function error_manager() {
@@ -40,8 +59,14 @@ class Config
 			}
 		}
 
-		if (sizeof($this::MAP) != sizeof(array_unique($this::MAP))) {
-			error_function("MAP config has two identical values.");
+		foreach ($this->monstersMap as $map => $class) {
+			if (strlen($map) != 1) {
+				error_function("Monster map config ", $class, " has a length other than 1 : ", $map);
+			}
+		}
+
+		if (sizeof($this::MAP) + sizeof($this->monstersMap) != sizeof(array_unique([...$this::MAP, ...$this->monstersMap]))) {
+			error_function("MAP and monsters configs have two identical values.");
 		}
 
 		foreach ($this->allDisplay as $key => $value) {
@@ -49,6 +74,14 @@ class Config
 				error_function("DISPLAY config ", (strlen($key) == 1 ? $this::MAP[$key] : $key), " must NOT be an empty string");
 			}
 		}
+
+		var_dump($this->monstersAllDisplay);
+		foreach ($this->monstersAllDisplay as $key => $value) {
+			if (sizeof($value) == 0) {
+				error_function("Monster ", $key, " display config must NOT be an empty string");
+			}
+		}
+
 		stop_if_error();
 	}
 
@@ -71,11 +104,21 @@ class Config
 			"SPIKE" => $this->set_one_display(DISPLAY_SPIKE, COLOR_SPIKE),
 			"BUMPER" => $this->set_one_display(DISPLAY_BUMPER, COLOR_BUMPER),
 		];
+		foreach ($this->monstersMap as $monster) {
+			var_dump($monster);
+			var_dump($monster::SPRITE);
+			$this->monstersAllDisplay[$monster] = $this->set_one_display($monster::SPRITE, "0");
+			var_dump($this->monstersAllDisplay[$monster]);
+		}
+
 		$this->update_display();
 	}
-	private function update_one_display($string) {
-		return $this->allDisplay[$string][
-			$this->spriteCycle % sizeof($this->allDisplay[$string])
+	private function update_one_display($string, $array = null) {
+		if ($array == null)
+			$array = $this->allDisplay;
+
+		return $array[$string][
+			$this->spriteCycle % sizeof($array[$string])
 		];
 	}
 	private function update_display() {
@@ -90,22 +133,31 @@ class Config
 			"SPIKE" => $this->update_one_display("SPIKE"),
 			"BUMPER" => $this->update_one_display("BUMPER"),
 		];
+
+		foreach ($this->monstersAllDisplay as $monster => $display) {
+			$this->monstersCurrentDisplay[$monster] = $this->update_one_display($monster, $this->monstersAllDisplay);
+		}
 	}
 
 	private function set_sprite_max_length() {
 		$this->spriteMaxCycle = math_lcm(
-			...array_map("sizeof", $this->allDisplay)
+			...array_map("sizeof", $this->allDisplay),
+			...array_map("sizeof", $this->monstersAllDisplay)
 		);
 	}
 
 	public function get_type_from_map($character) {
-		return $this::MAP[$character] ?? "AIR";
+		return $this::MAP[$character] ?? "OTHER";
 	}
 
 	public function get_display_char_from_type(string $type) {
 		return
 			$this->currentDisplay[$type] ??
 			$this->currentDisplay["AIR"];
+	}
+
+	public function get_monster_display_from_name(string $name) {
+		return $this->monstersCurrentDisplay[$name];
 	}
 
 	public function display_data_next_cycle() {
